@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 import userInterface.UiControls;;
 
@@ -22,8 +21,8 @@ public class SwingFrame extends JFrame {
 	JPanel bgPanel = new JPanel();
 	JPanel textAreaPanel = new JPanel();
 	JPanel buttonAreaPanel = new JPanel();
-	JTextArea clientOutput = new JTextArea("Client Output", 5, 10);
 
+	ClientTextArea clientOutput = new ClientTextArea("Client Output", 5, 10);
 	ServerTextArea serverOutput = new ServerTextArea("Server Output", 5, 10);
 	
 	JButton startButton = new JButton("Start");
@@ -57,9 +56,7 @@ public class SwingFrame extends JFrame {
 		bgPanel.setLayout(new GridLayout(0, 1));
 
 			textAreaPanel.setLayout(new GridLayout(0, 2));
-			clientOutput.setEditable(false);
 			textAreaPanel.add(clientOutput);
-	
 			textAreaPanel.add(serverOutput);
 
 		bgPanel.add(textAreaPanel);
