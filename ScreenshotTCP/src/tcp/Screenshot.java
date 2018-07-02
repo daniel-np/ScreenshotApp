@@ -13,31 +13,6 @@ import javax.imageio.ImageIO;
 public class Screenshot{
 
 	public static final long serialVersionUID = 1L;
-
-	/**
-	 * Takes a screenshot and places it in
-	 * default folder
-	 */
-	public static void takeShot() {
-		try {
-			Thread.sleep(120);
-			Robot r = new Robot();
-
-			// Path to picture folder
-			String path = "/Users/Daniel/Documents/Skole/dat104/ws-datanett/Test/Screenshots/" + "Screenshot" + ".png";
-
-			// Used to get ScreenSize and capture image
-			Rectangle capture = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-			BufferedImage image = r.createScreenCapture(capture);
-
-			ImageIO.write(image, "png", new File(path));
-			System.out.println("Screenshot saved!");
-
-		} catch (AWTException | IOException | InterruptedException ex) {
-			System.out.println(ex);
-		}
-	}
-
 	/**
 	 * 
 	 * @return BufferedImage of the whole screen

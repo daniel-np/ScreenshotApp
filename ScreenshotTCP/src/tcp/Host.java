@@ -39,7 +39,7 @@ public class Host implements Runnable {
 
 			int counter = input.readInt();
 
-			String path = "/Users/Daniel/Documents/Skole/dat104/ws-datanett/Test/Screenshots/" + "Screenshot" + counter
+			String path = "/Users/Daniel/Desktop/Egenprosjekter/git/ScreenshotTCP/Screenshots/" + "Screenshot" + counter
 					+ ".png";
 
 			System.out.println("Starting transaction...");
