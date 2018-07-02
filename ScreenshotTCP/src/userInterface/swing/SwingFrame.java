@@ -4,12 +4,12 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintStream;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import userInterface.UiControls;;
 
@@ -22,8 +22,11 @@ public class SwingFrame extends JFrame {
 	JPanel textAreaPanel = new JPanel();
 	JPanel buttonAreaPanel = new JPanel();
 
-	ClientTextArea clientOutput = new ClientTextArea("Client Output", 5, 10);
-	ServerTextArea serverOutput = new ServerTextArea("Server Output", 5, 10);
+	ClientTextArea clientOutput = new ClientTextArea("Client", 5, 10);
+	ServerTextArea serverOutput = new ServerTextArea("Server", 5, 10);
+	JScrollPane clientScrollPane = new JScrollPane(clientOutput);
+	JScrollPane serverScrollPane = new JScrollPane(serverOutput);
+	
 	
 	JButton startButton = new JButton("Start");
 	JButton stopButton = new JButton("Stop");
@@ -56,8 +59,11 @@ public class SwingFrame extends JFrame {
 		bgPanel.setLayout(new GridLayout(0, 1));
 
 			textAreaPanel.setLayout(new GridLayout(0, 2));
-			textAreaPanel.add(clientOutput);
-			textAreaPanel.add(serverOutput);
+			clientScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			serverScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			textAreaPanel.add(clientScrollPane);
+			textAreaPanel.add(serverScrollPane);
+			
 
 		bgPanel.add(textAreaPanel);
 			buttonAreaPanel.setLayout(new FlowLayout());
@@ -71,12 +77,11 @@ public class SwingFrame extends JFrame {
 				}));
 				buttonAreaPanel.add(comboBox);
 		bgPanel.add(buttonAreaPanel);
-
-		serverOutput.append("\n");
-		PrintStream ps = System.out;
-		
-		
 		add(bgPanel);
 		setVisible(true);
+		
+		uiControls.getClient().addObserver(clientOutput);
+		uiControls.getServer().addObserver(serverOutput);
+		
 	}
 }

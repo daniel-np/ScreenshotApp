@@ -26,7 +26,6 @@ public class Screenshot{
 			Rectangle capture = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
 			BufferedImage image = r.createScreenCapture(capture);
 
-			System.out.println("Screen Captured!");
 
 			return image;
 		} catch (AWTException | InterruptedException ex) {
@@ -46,7 +45,6 @@ public class Screenshot{
 	public static void saveImage(String path, BufferedImage image) {
 		try {
 			ImageIO.write(image, "png", new File(path));
-			System.out.println("Screenshot saved!");
 			
 		} catch (IOException e) {
 			e.printStackTrace();

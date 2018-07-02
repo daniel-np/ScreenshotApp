@@ -6,20 +6,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Observable;
 
-public class Host implements Runnable {
+public class Client extends Observable implements Runnable {
 
 	private Thread t;
-	
+
 	public void start() {
-		if(t == null) {
+		if (t == null) {
 			t = new Thread(this);
 			t.start();
 		}
 	}
-	
+
 	public void stop() {
-		
+
 	}
 
 	@Override
@@ -27,11 +28,15 @@ public class Host implements Runnable {
 
 		byte[] addr = { 127, 0, 0, 1 };
 
+		String message;
 		BufferedImage image;
 		try {
+			message = "Client started...";
+			messageOut(message);
 			InetAddress host = InetAddress.getByAddress(addr);
 			Socket klientSocket = new Socket(host, 5194);
-			System.out.println("Connected to: " + klientSocket.getInetAddress().getHostAddress());
+			message = "Connected to: " + klientSocket.getInetAddress().getHostAddress();
+			messageOut(message);
 
 			InputStream inputStream = klientSocket.getInputStream();
 
@@ -42,7 +47,8 @@ public class Host implements Runnable {
 			String path = "/Users/Daniel/Desktop/Egenprosjekter/git/ScreenshotTCP/Screenshots/" + "Screenshot" + counter
 					+ ".png";
 
-			System.out.println("Starting transaction...");
+			message = "Starting transaction...";
+			messageOut(message);
 			// Receive width, heigh and rgb
 			int width = input.readInt();
 			int height = input.readInt();
@@ -56,20 +62,24 @@ public class Host implements Runnable {
 				for (int j = 0; j < height; j++) {
 					rgb[i][j] = input.readInt();
 
-					if (progress % (size / 1000) == 0) {
-						System.out.print("Receiving: ");
+					if (progress % (size / 100) == 0) {
+						message = "Receiving: ";
 						currentProgress = ((1 - progress / size) * 100);
-						System.out.printf("%.1f", currentProgress);
-						System.out.println("% remaining.");
+						message += String.format("%.1f", currentProgress);
+						message += "% remaining.";
+						messageOut(message);
 					}
 					progress++;
 				}
 			}
-			System.out.println("Transaction complete!");
+			message = "Transaction complete!";
+			messageOut(message);
 			image = Screenshot.constructImage(rgb, 1);
 
 			Screenshot.saveImage(path, image);
-
+			message = "Screenshot saved!";
+			messageOut(message);
+			
 			klientSocket.close();
 		} catch (IOException io) {
 			io.printStackTrace();
@@ -77,5 +87,9 @@ public class Host implements Runnable {
 		}
 	}
 
+	private void messageOut(String message) {
+		setChanged();
+		notifyObservers(message);
+	}
 
 }

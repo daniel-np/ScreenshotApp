@@ -7,28 +7,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Observable;
 
-import javax.swing.JTextArea;
+public class Server extends Observable implements Runnable {
 
-public class Server implements Runnable {
-
-	// to turn off server
-	private AtomicBoolean isServerOn = new AtomicBoolean(true);
 	private Thread t;
-
-	// Timer may have to be atomic without lock or
-	// volatile with lock
-	private int timer = 30;
-
-	JTextArea textArea;
+	private int timer;
 
 	public Server() {
-	}
-
-	// Timer is still just index not real time!!! Fix in SwingFrame perhaps?
-	public Server(int timer) {
-		this.timer = timer;
+	
 	}
 
 	public void start() {
@@ -43,18 +30,15 @@ public class Server implements Runnable {
 		ServerSocket server;
 		Socket connection;
 		int counter = 1;
+		String message;
 		try {
 			server = new ServerSocket(5194, 100);
-			String message = "Server started...";
-			// System.out.println(message);
-			// textArea.setText(message);
-			// PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
-
-			System.out.println();
-			while (isServerOn.get()) {
+			message = "Server started...";
+			messageOut(message);
+			while (true) {
 				connection = server.accept();
 				message = "Connection received from: " + connection.getInetAddress().getHostAddress();
-				System.out.println(message);
+				messageOut(message);
 				// Create outputstream
 				DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 
@@ -62,6 +46,8 @@ public class Server implements Runnable {
 
 				// Image screenshot part
 				BufferedImage image = Screenshot.captureWholeScreen();
+				message = "Screen Captured";
+				messageOut(message);
 				int[][] rgb = Screenshot.deconstructImage(image);
 
 				// Transmit image width and height as first and second transaction
@@ -71,7 +57,7 @@ public class Server implements Runnable {
 
 				boolean failed = false;
 				message = "Sending to: " + connection.getInetAddress().getHostAddress();
-				System.out.println(message);
+				messageOut(message);
 				endTransaction: if (!failed)
 					for (int i = 0; i < rgb.length; i++) {
 						for (int j = 0; j < rgb[0].length; j++) {
@@ -80,7 +66,7 @@ public class Server implements Runnable {
 
 							} catch (SocketException e) {
 								message = "Transaction failed...";
-								System.out.println(message);
+								messageOut(message);
 								failed = true;
 								break endTransaction;
 							}
@@ -88,37 +74,25 @@ public class Server implements Runnable {
 					}
 				if (!failed) {
 					message = "Transaction complete!";
-					System.out.println(message);
+					messageOut(message);
 				}
 			}
 		} catch (EOFException eof) {
-			String message = "Client terminated connection";
-			System.out.println(message);
+			message = "Client terminated connection";
+			messageOut(message);
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
 	}
-
-	public boolean getIsServerOn() {
-		return isServerOn.get();
+	
+	private void messageOut(String message) {
+		setChanged();
+		notifyObservers(message);
 	}
-
-	public void setIsServerOn(boolean newValue) {
-		boolean existingValue = getIsServerOn();
-
-		if (isServerOn.compareAndSet(existingValue, newValue))
-			return;
-	}
-
 	public int getTimer() {
 		return timer;
 	}
-
 	public void setTimer(int timer) {
 		this.timer = timer;
-	}
-
-	public Thread getThread() {
-		return t;
 	}
 }

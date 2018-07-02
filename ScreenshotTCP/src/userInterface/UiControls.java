@@ -2,16 +2,15 @@ package userInterface;
 
 import java.io.IOException;
 
-import tcp.Host;
-import tcp.PipedStream;
+import tcp.Client;
 import tcp.Server;
+
 
 public class UiControls {
 
 	Server server = new Server();
-	Host host = new Host();
-	PipedStream stream;
-
+	Client client = new Client();
+	
 	/**
 	 * Starts a server thread with default timer 30 sec
 	 */
@@ -26,9 +25,6 @@ public class UiControls {
 	 * @throws IOException
 	 */
 	public void startServer(int timer) {
-		if (stream == null)
-			stream = new PipedStream();
-
 		server.setTimer(timer);
 		server.start();
 	}
@@ -39,9 +35,7 @@ public class UiControls {
 	 * @throws IOException
 	 */
 	public void startClient() {
-		if (stream == null)
-			stream = new PipedStream();
-		host.start();
+		client.start();
 	}
 
 	public void pingServer() {
@@ -64,8 +58,12 @@ public class UiControls {
 
 	}
 	
-	public PipedStream getStream() {
-		return stream;
+	public Server getServer() {
+		return server;
+	}
+
+	public Client getClient() {
+		return client;
 	}
 
 }
