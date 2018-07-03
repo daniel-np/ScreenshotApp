@@ -18,7 +18,7 @@ public class Client extends Observable implements Runnable {
 	private boolean transferInProgress = false;
 	private long startTime, endTime, duration;
 	private boolean isRunning = false;
-	private int screenshotTimer = 10000;
+	private int screenshotTimer = 30000;
 
 	public void start() {
 		if (t == null) {
