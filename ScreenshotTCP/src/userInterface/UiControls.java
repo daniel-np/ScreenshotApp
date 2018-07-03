@@ -10,31 +10,39 @@ public class UiControls {
 	Server server = new Server();
 	Client client = new Client();
 
+
+
 	/**
-	 * Starts a server thread with default timer 30 sec
+	 * Starts a server thread
+	 * 
+	 * @throws IOException
 	 */
 	public void startServer() {
 		server.start();
 	}
 
 	/**
-	 * Starts a server thread with specific timer
-	 * 
-	 * @param timer
-	 * @throws IOException
-	 */
-	public void startServer(int timer) {
-		server.setTimer(timer);
-		server.start();
-	}
-
-	/**
-	 * Starts a host thread
+	 * Starts a host thread with timer
 	 * 
 	 * @throws IOException
 	 */
-	public void startClient() {
-		client.start();
+	public void startClient(int timer) {
+		if (!client.isRunning()) {
+			client.setRunning(true);
+			client.start();
+		} else {
+			switch (timer) {
+			case 0:
+				client.setScreenshotTimer(30000);
+				break;
+			case 1:
+				client.setScreenshotTimer(60000);
+				break;
+			case 2:
+				client.setScreenshotTimer(600000);
+				break;
+			}
+		}
 	}
 
 	public void pingServer() {
@@ -54,7 +62,8 @@ public class UiControls {
 	public void stopTransfer() {
 		// Stop transfer while keeping connection open. If possible?
 		// In the meantime, terminate host thread
-
+//		client.setRunning(false);
+		client.setScreenshotTimer(0);
 	}
 
 	public Server getServer() {

@@ -36,7 +36,7 @@ public class TextMenu extends UiControls {
 			startServer();
 			break;
 		case "2":
-			startClient();
+			startClient(30000);
 			break;
 		case "3":
 			settings();

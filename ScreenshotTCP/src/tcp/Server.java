@@ -14,7 +14,7 @@ public class Server extends Observable implements Runnable {
 
 	private Thread t;
 	private int timer;
-	private boolean isRunning;
+	private boolean isRunning = false;
 	long startTime, endTime, duration;
 
 	public Server() {
