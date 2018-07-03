@@ -7,10 +7,13 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Observable;
+import org.apache.commons.validator.routines.InetAddressValidator;
 
 public class Client extends Observable implements Runnable {
 
 	private Thread t;
+	private byte[] address = { 127, 0, 0, 1 };
+	private boolean transferInProgress = false;
 
 	public void start() {
 		if (t == null) {
@@ -26,14 +29,13 @@ public class Client extends Observable implements Runnable {
 	@Override
 	public void run() {
 
-		byte[] addr = { 127, 0, 0, 1 };
-
 		String message;
 		BufferedImage image;
 		try {
 			message = "Client started...";
 			messageOut(message);
-			InetAddress host = InetAddress.getByAddress(addr);
+			transferInProgress = true;
+			InetAddress host = InetAddress.getByAddress(address);
 			Socket klientSocket = new Socket(host, 5194);
 			message = "Connected to: " + klientSocket.getInetAddress().getHostAddress();
 			messageOut(message);
@@ -73,13 +75,14 @@ public class Client extends Observable implements Runnable {
 				}
 			}
 			message = "Transaction complete!";
+			transferInProgress = false;
 			messageOut(message);
 			image = Screenshot.constructImage(rgb, 1);
 
 			Screenshot.saveImage(path, image);
 			message = "Screenshot saved!";
 			messageOut(message);
-			
+
 			klientSocket.close();
 		} catch (IOException io) {
 			io.printStackTrace();
@@ -90,6 +93,40 @@ public class Client extends Observable implements Runnable {
 	private void messageOut(String message) {
 		setChanged();
 		notifyObservers(message);
+	}
+
+	public String getAddress() {
+		String stringAddress = "";
+		for (int i = 0; i < address.length - 1; i++) {
+			stringAddress += String.valueOf(address[i] + ".");
+		}
+		stringAddress += String.valueOf(address[address.length - 1]);
+
+		return stringAddress;
+	}
+
+	public void setAddress(String address) {
+		if (transferInProgress == false) {
+			InetAddressValidator validator = new InetAddressValidator();
+			if (validator.isValidInet4Address(address)) {
+
+				byte[] ipBytes = new byte[4];
+				String[] array = address.split("\\.");
+
+				for (byte x : ipBytes) {
+					for (String y : array) {
+						x = (byte) Integer.parseInt(y);
+					}
+				}
+
+				this.address = ipBytes;
+				messageOut("Ip-address set to: " + address);
+			} else {
+				messageOut("Invalid ip-address!");
+			}
+		} else {
+			messageOut("Transfer in progress!");
+		}
 	}
 
 }

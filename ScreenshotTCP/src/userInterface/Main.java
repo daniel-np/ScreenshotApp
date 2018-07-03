@@ -5,6 +5,6 @@ import userInterface.swing.SwingFrame;
 public class Main {
 
 	public static void main(String[] args) {
-		new SwingFrame();
+		new SwingFrame("Screenshot App");
 	}
 }

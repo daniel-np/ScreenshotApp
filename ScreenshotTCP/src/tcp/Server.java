@@ -13,6 +13,7 @@ public class Server extends Observable implements Runnable {
 
 	private Thread t;
 	private int timer;
+	private boolean isRunning;
 
 	public Server() {
 	
@@ -94,5 +95,13 @@ public class Server extends Observable implements Runnable {
 	}
 	public void setTimer(int timer) {
 		this.timer = timer;
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
 	}
 }

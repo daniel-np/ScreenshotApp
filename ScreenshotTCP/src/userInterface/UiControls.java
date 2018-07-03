@@ -5,12 +5,11 @@ import java.io.IOException;
 import tcp.Client;
 import tcp.Server;
 
-
 public class UiControls {
 
 	Server server = new Server();
 	Client client = new Client();
-	
+
 	/**
 	 * Starts a server thread with default timer 30 sec
 	 */
@@ -57,13 +56,21 @@ public class UiControls {
 		// In the meantime, terminate host thread
 
 	}
-	
+
 	public Server getServer() {
 		return server;
 	}
 
 	public Client getClient() {
 		return client;
+	}
+
+	public String getClientAddress() {
+		return client.getAddress();
+	}
+
+	public void setClientAddress(String address) {
+		client.setAddress(address);
 	}
 
 }
