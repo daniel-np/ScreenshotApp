@@ -1,12 +1,14 @@
 package tcp;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Observable;
+
 import org.apache.commons.validator.routines.InetAddressValidator;
 
 public class Client extends Observable implements Runnable {
@@ -42,8 +44,8 @@ public class Client extends Observable implements Runnable {
 			messageOut(message);
 
 			InputStream inputStream = klientSocket.getInputStream();
-			
-			DataInputStream input = new DataInputStream(inputStream);
+			BufferedInputStream bufferedInputStream =  new BufferedInputStream(inputStream);
+			DataInputStream input = new DataInputStream(bufferedInputStream);
 
 			int counter = input.readInt();
 
@@ -82,8 +84,8 @@ public class Client extends Observable implements Runnable {
 			transferInProgress = false;
 			//Duration
 			endTime = System.nanoTime();
-			duration = (endTime - startTime)/1000000000;//time in seconds
-			message = "Transaction completed in " + duration + "s!";
+			duration = (endTime - startTime)/1000000;//time in seconds
+			message = "Transaction completed in " + duration + "ms!";
 			messageOut(message);
 			
 			

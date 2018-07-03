@@ -1,6 +1,7 @@
 package tcp;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -42,7 +43,8 @@ public class Server extends Observable implements Runnable {
 				message = "Connection received from: " + connection.getInetAddress().getHostAddress();
 				messageOut(message);
 				// Create outputstream
-				DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+				BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(connection.getOutputStream());
+				DataOutputStream output = new DataOutputStream(bufferedOutputStream);
 
 				output.writeInt(counter++);
 
@@ -76,10 +78,11 @@ public class Server extends Observable implements Runnable {
 						}
 					}
 				if (!failed) {
+					output.close();
 					//Duration
 					endTime = System.nanoTime();
-					duration = (endTime - startTime)/1000000000;//time in seconds
-					message = "Transaction completed in " + duration + "s!";
+					duration = (endTime - startTime)/1000000;//time in seconds
+					message = "Transaction completed in " + duration + "ms!";
 					messageOut(message);
 				}
 			}
