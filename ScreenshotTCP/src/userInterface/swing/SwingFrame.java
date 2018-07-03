@@ -46,8 +46,6 @@ public class SwingFrame extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		// JLabel message = new JLabel("What's up?");
-
 		// Overview of layout
 		// 		Grid(0,1)
 		// 			Grid(0,2)

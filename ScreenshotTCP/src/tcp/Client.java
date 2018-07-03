@@ -14,7 +14,8 @@ public class Client extends Observable implements Runnable {
 	private Thread t;
 	private byte[] address = { 127, 0, 0, 1 };
 	private boolean transferInProgress = false;
-
+	long startTime, endTime, duration;
+	
 	public void start() {
 		if (t == null) {
 			t = new Thread(this);
@@ -41,7 +42,7 @@ public class Client extends Observable implements Runnable {
 			messageOut(message);
 
 			InputStream inputStream = klientSocket.getInputStream();
-
+			
 			DataInputStream input = new DataInputStream(inputStream);
 
 			int counter = input.readInt();
@@ -50,6 +51,10 @@ public class Client extends Observable implements Runnable {
 					+ ".png";
 
 			message = "Starting transaction...";
+			
+			//Duration
+			startTime = System.nanoTime();
+			
 			messageOut(message);
 			// Receive width, heigh and rgb
 			int width = input.readInt();
@@ -74,9 +79,15 @@ public class Client extends Observable implements Runnable {
 					progress++;
 				}
 			}
-			message = "Transaction complete!";
 			transferInProgress = false;
+			//Duration
+			endTime = System.nanoTime();
+			duration = (endTime - startTime)/1000000000;//time in seconds
+			message = "Transaction completed in " + duration + "s!";
 			messageOut(message);
+			
+			
+			
 			image = Screenshot.constructImage(rgb, 1);
 
 			Screenshot.saveImage(path, image);

@@ -14,6 +14,7 @@ public class Server extends Observable implements Runnable {
 	private Thread t;
 	private int timer;
 	private boolean isRunning;
+	long startTime, endTime, duration;
 
 	public Server() {
 	
@@ -55,7 +56,8 @@ public class Server extends Observable implements Runnable {
 				output.writeInt(image.getWidth());
 				output.writeInt(image.getHeight());
 				// Transmit image as a series of int
-
+				//Duration
+				startTime = System.nanoTime();
 				boolean failed = false;
 				message = "Sending to: " + connection.getInetAddress().getHostAddress();
 				messageOut(message);
@@ -74,7 +76,10 @@ public class Server extends Observable implements Runnable {
 						}
 					}
 				if (!failed) {
-					message = "Transaction complete!";
+					//Duration
+					endTime = System.nanoTime();
+					duration = (endTime - startTime)/1000000000;//time in seconds
+					message = "Transaction completed in " + duration + "s!";
 					messageOut(message);
 				}
 			}
