@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.util.Observable;
 
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -19,7 +20,7 @@ public class Client extends Observable implements Runnable {
 	private long startTime, endTime, duration;
 	private boolean isRunning = false;
 	private int screenshotTimer = 30000;
-	String path = "";
+	private String path = "";
 
 	public void start() {
 		if (t == null) {
@@ -50,9 +51,11 @@ public class Client extends Observable implements Runnable {
 
 				int counter = input.readInt();
 
-				//Path - Should be relative, but I think it only works on osx thus the if call before saving the file later
-				path = Client.class.getClassLoader().getResource("res/screenshots/").toString() + "screenshot-" + System.currentTimeMillis()/1000 + ".png";
-
+				try {
+					path = Client.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
 				message = "Starting transaction...";
 
 				// Duration
@@ -92,7 +95,7 @@ public class Client extends Observable implements Runnable {
 				image = Screenshot.constructImage(rgb, 1);
 
 				if (System.getProperty("os.name").contains("Mac OS X")) {
-					Screenshot.saveImage(path.substring(5), image);
+					Screenshot.saveImage(path + "screenshot.png", image);
 					message = "Screenshot saved!";
 				} else {
 					message = "Wrong filesystem! Plz fix!";
