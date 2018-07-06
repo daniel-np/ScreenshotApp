@@ -19,6 +19,7 @@ public class Client extends Observable implements Runnable {
 	private long startTime, endTime, duration;
 	private boolean isRunning = false;
 	private int screenshotTimer = 30000;
+	String path = "";
 
 	public void start() {
 		if (t == null) {
@@ -32,7 +33,7 @@ public class Client extends Observable implements Runnable {
 		String message;
 		BufferedImage image;
 		try {
-			
+
 			message = "Client started...";
 			messageOut(message);
 
@@ -42,15 +43,15 @@ public class Client extends Observable implements Runnable {
 				Socket klientSocket = new Socket(host, 5194);
 				message = "Connected to: " + klientSocket.getInetAddress().getHostAddress();
 				messageOut(message);
-				
+
 				InputStream inputStream = klientSocket.getInputStream();
 				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
 				DataInputStream input = new DataInputStream(bufferedInputStream);
 
 				int counter = input.readInt();
 
-				String path = "/Users/Daniel/Desktop/Egenprosjekter/git/ScreenshotTCP/Screenshots/" + "Screenshot"
-						+ counter + ".png";
+				//Path - Should be relative, but I think it only works on osx thus the if call before saving the file later
+				path = Client.class.getClassLoader().getResource("res/screenshots/").toString() + "screenshot-" + System.currentTimeMillis()/1000 + ".png";
 
 				message = "Starting transaction...";
 
@@ -90,12 +91,16 @@ public class Client extends Observable implements Runnable {
 
 				image = Screenshot.constructImage(rgb, 1);
 
-				Screenshot.saveImage(path, image);
-				message = "Screenshot saved!";
+				if (System.getProperty("os.name").contains("Mac OS X")) {
+					Screenshot.saveImage(path.substring(5), image);
+					message = "Screenshot saved!";
+				} else {
+					message = "Wrong filesystem! Plz fix!";
+				}
 				messageOut(message);
 
 				klientSocket.close();
-				
+
 				waitForScreenshot(screenshotTimer);
 			}
 		} catch (IOException io) {
