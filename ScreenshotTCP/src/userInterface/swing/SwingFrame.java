@@ -36,6 +36,7 @@ public class SwingFrame extends JFrame {
 	String[] choices = { "30 sec", "1 min", "10 min" };
 
 	JComboBox<?> comboBox = new JComboBox<Object>(choices);
+	
 
 	public SwingFrame(String name) {
 
@@ -101,4 +102,5 @@ public class SwingFrame extends JFrame {
 		uiControls.getServer().addObserver(serverOutput);
 
 	}
+	
 }

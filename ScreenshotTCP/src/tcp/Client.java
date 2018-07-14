@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.Observable;
 
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -19,7 +20,8 @@ public class Client extends Observable implements Runnable {
 	private boolean transferInProgress = false;
 	private long startTime, endTime, duration;
 	private boolean isRunning = false;
-	private int screenshotTimer = 30000;
+	private final int DEFAULTTIMER = 30000;
+	private int screenshotTimer = DEFAULTTIMER;
 	private String path = "";
 
 	public void start() {
@@ -93,9 +95,9 @@ public class Client extends Observable implements Runnable {
 				messageOut(message);
 
 				image = Screenshot.constructImage(rgb, 1);
-
+				
 				if (System.getProperty("os.name").contains("Mac OS X")) {
-					Screenshot.saveImage(path + "screenshot.png", image);
+					Screenshot.saveImage(path + System.nanoTime() + "screenshot.png", image);
 					message = "Screenshot saved!";
 				} else {
 					message = "Wrong filesystem! Plz fix!";
@@ -120,7 +122,11 @@ public class Client extends Observable implements Runnable {
 
 	private synchronized void waitForScreenshot(int timer) {
 		try {
-			this.wait(timer);
+//			this.wait(timer);
+//			Thread.sleep(timer);
+//			t.wait();
+			t.sleep(timer);
+			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
